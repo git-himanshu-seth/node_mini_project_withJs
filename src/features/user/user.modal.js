@@ -18,6 +18,10 @@ export class UserModal {
     );
     return user ? user : null;
   }
+
+  static getAllUsers() {
+    return users;
+  }
 }
 const users = [
   {
