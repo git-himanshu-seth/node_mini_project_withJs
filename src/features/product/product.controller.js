@@ -1,4 +1,5 @@
 import ProductModal from "./product.modal.js";
+
 export default class ProductController {
   // Controller methods will be implemented here
   getAllProducts(req, res) {
@@ -12,7 +13,6 @@ export default class ProductController {
   }
   getSingleProduct(req, res) {
     const { id } = req.params;
-    console.log(id);
     const product = ProductModal.getSingleProduct(parseInt(id));
     if (product) {
       res.status(200).json(product);
@@ -21,9 +21,16 @@ export default class ProductController {
     }
   }
 
-  rateProduct(req, res) {}
+  rateProduct(req, res) {
+    const { userId, productId, rating } = req.query;
+    const isRated = ProductModal.rateProduct(userId, productId, rating);
+    if (isRated) {
+      res.status(200).json({ message: "Product rated successfully" });
+    } else {
+      res.status(400).json({ message: "User or product not found" });
+    }
+  }
   filterProducts(req, res) {
-    console.log(req.query);
     const { minPrice, maxPrice, category } = req.query;
     const filteredProducts = ProductModal.filterProducts(
       parseFloat(minPrice),

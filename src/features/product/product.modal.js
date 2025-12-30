@@ -1,3 +1,4 @@
+import { UserModal } from "../user/user.modal.js";
 export default class ProductModal {
   constructor(id, name, price, des, imageUrl, size, category) {
     this.id = id;
@@ -29,8 +30,38 @@ export default class ProductModal {
         (!category || product.category === category)
       );
     });
-    console.log("FILTERED PRODUCTS: ", filteredProducts);
     return filteredProducts;
+  }
+
+  static rateProduct(userId, productId, rating) {
+    // find user and product
+    const user = UserModal.getAllUsers().find(
+      (user) => user.id === Number(userId)
+    );
+    const productIndex = products.findIndex(
+      (product) => product.id === Number(productId)
+    );
+    if (user && productIndex !== -1) {
+      // Add rating to product
+      if (!products[productIndex].ratings) {
+        products[productIndex].ratings = [];
+        products[productIndex].ratings.push({ userId, rating });
+      } else {
+        const existingRatingIndex = products[productIndex].ratings.findIndex(
+          (r) => r.userId === userId
+        );
+        if (existingRatingIndex !== -1) {
+          // Update existing rating
+          products[productIndex].ratings[existingRatingIndex].rating = rating;
+        } else {
+          // Add new rating
+          products[productIndex].ratings.push({ userId, rating });
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 

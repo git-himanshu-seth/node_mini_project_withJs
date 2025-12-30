@@ -7,6 +7,7 @@ const controllers = new productControllers();
 productsRoutes.get("/filter", controllers.filterProducts);
 
 productsRoutes.get("/", controllers.getAllProducts);
+productsRoutes.get("/rating", controllers.rateProduct);
 
 productsRoutes.post(
   "/",
