@@ -22,23 +22,6 @@
   },
 
   "paths": {
-    "/api/products": {
-      "get": {
-        "tags": ["Products"],
-        "summary": "Get Products",
-        "description": "User will get all products",
-        "security": [{ "JWT": {} }],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
-      }
-    },
-
     "/api/users/login": {
       "post": {
         "tags": ["Users"],
@@ -67,6 +50,22 @@
           },
           "400": {
             "description": "Incorrect Credentials"
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get Products",
+        "description": "User will get all products",
+        "security": [{ "JWT": {} }],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
