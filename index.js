@@ -12,8 +12,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api-docs", swagger.serve, swagger.setup(swaggerDocument));
-app.use("/api/product", productRoutes);
-app.use("/api/user", userRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/cart", cartRoutes);
 
 export default app;
