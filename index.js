@@ -1,15 +1,48 @@
 import express from "express";
+import swagger from "swagger-ui-express";
+import cors from "cors";
 import productRoutes from "./src/features/product/routes/product.routes.js";
 import userRoutes from "./src/features/user/routes/user.routes.js";
 import cartRoutes from "./src/features/cart/routes/cart.route.js";
 import cookieParser from "cookie-parser";
+
+import swaggerDocument from "./swagger.json" assert { type: "json" };
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/product", productRoutes);
-app.use("/api/user", userRoutes);
+// CORS policy configuration
+const corsOptions = {
+  origin: "http://localhost:5500",
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: "*",
+  credentials: true,
+};
+app.use(cors(corsOptions));
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", "http://localhost:5500");
+//   res.header("Access-Control-Allow-Headers", "*");
+//   res.header("Access-Control-Allow-Methods", "*");
+// return ok for preflight request.
+//   if (req.method == "OPTIONS") {
+//     return res.sendStatus(200);
+//   }
+//   next();
+// });
+
+app.use("/api-docs", swagger.serve, swagger.setup(swaggerDocument));
+app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/cart", cartRoutes);
+
+//  Middleware to handle 404 requests.
+app.use((req, res) => {
+  res
+    .status(404)
+    .send(
+      "API not found. Please check our documentation for more information at localhost:3200/api-docs"
+    );
+});
 
 export default app;

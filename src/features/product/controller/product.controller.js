@@ -12,7 +12,6 @@ export const addProduct = (req, res, next) => {
 };
 export const rateProduct = (req, res, next) => {
   const { userId, productId, rating } = req.query;
-  // console.log(userId, productId, rating);
   if (rating < 0 || rating > 5) {
     res
       .status(401)
