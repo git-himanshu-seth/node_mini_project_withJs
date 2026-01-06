@@ -7,6 +7,7 @@ import cartRoutes from "./src/features/cart/routes/cart.route.js";
 import cookieParser from "cookie-parser";
 
 import swaggerDocument from "./swagger.json" assert { type: "json" };
+import loggerMiddleware from "./src/middlewares/log.middleware.js";
 const app = express();
 
 app.use(express.json());
@@ -30,10 +31,10 @@ app.use(cors(corsOptions));
 //   }
 //   next();
 // });
-
+app.use(loggerMiddleware);
 app.use("/api-docs", swagger.serve, swagger.setup(swaggerDocument));
-app.use("/api/products", productRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api/product", productRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/cart", cartRoutes);
 
 //  Middleware to handle 404 requests.

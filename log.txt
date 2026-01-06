@@ -1,0 +1,16 @@
+TimeStamp: 2026-01-06T12:10:54.341Z 
+ Method: GET 
+ Request: /api/product 
+ Headers: undefined 
+ Body: undefined 
+ Parameters: {} 
+ Query: {} 
+
+ TimeStamp: 2026-01-06T12:11:21.519Z 
+ Method: GET 
+ Request: /api/product 
+ Headers: undefined 
+ Body: undefined 
+ Parameters: {} 
+ Query: {} 
+
