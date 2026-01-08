@@ -1,3 +1,4 @@
+import { ApplicationError } from "../../../errorHandler/applicationError.js";
 import { addUser, confirmLogin } from "../model/user.model.js";
 import jwt from "jsonwebtoken";
 export const registerUser = (req, res, next) => {
@@ -24,6 +25,6 @@ export const loginUser = (req, res) => {
       .cookie("userId", status.id, { maxAge: 900000, httpOnly: false })
       .json({ status: "success", msg: "login successfull", token });
   } else {
-    res.status(400).json({ status: "failure", msg: "invalid user details" });
+    throw new ApplicationError("invalid user details", 400);
   }
 };

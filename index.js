@@ -37,6 +37,12 @@ app.use("/api/product", productRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/cart", cartRoutes);
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  const statusCode = err.status || 500;
+  const message = err.message || "Internal Server Error";
+  return res.status(statusCode).json({ error: message });
+});
 //  Middleware to handle 404 requests.
 app.use((req, res) => {
   res

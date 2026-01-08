@@ -1,26 +1,23 @@
-import fs from "fs";
+import winston from "winston";
+const { createLogger, format, transports } = winston;
+const { combine, timestamp, label, printf } = format;
 
-const fsPromises = fs.promises;
+const myFormat = printf(({ level, message, label, timestamp }) => {
+  return `${timestamp} [${label}] ${level}: ${message}`;
+});
 
-const log = async (logData) => {
-  try {
-    logData = logData;
-    await fsPromises.appendFile("log.txt", logData + "\n");
-  } catch (err) {
-    console.error("Error writing log:", err);
-  }
-};
+const logger = createLogger({
+  level: "info",
+  format: combine(format.json(), timestamp(), myFormat),
+  defaultMeta: { service: "request-logging" },
+
+  transports: [new winston.transports.File({ filename: "logs/combined.log" })],
+});
 
 const loggerMiddleware = async (req, res, next) => {
   if (!req.url.includes("login")) {
-    let logData = ` TimeStamp: ${new Date().toISOString()} \n Method: ${
-      req.method
-    } \n Request: ${req.url} \n Headers: ${
-      req.headers.origin
-    } \n Body: ${JSON.stringify(req.body)} \n Parameters: ${JSON.stringify(
-      req.params
-    )} \n Query: ${JSON.stringify(req.query)} \n`;
-    log(logData);
+    let logData = ` ${req.url} ---- ${JSON.stringify(req.body)} `;
+    logger.info(logData);
   }
   next();
 };
