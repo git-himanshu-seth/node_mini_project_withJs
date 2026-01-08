@@ -1,3 +1,4 @@
+import { ApplicationError } from "../../../errorHandler/applicationError.js";
 import { getAllUsers } from "../../user/model/user.model.js";
 
 let id = 3;
@@ -13,16 +14,16 @@ export const fetchAllProducts = () => {
 
 export const rateProductModel = (productId, userId, rating) => {
   const user = getAllUsers().find((user) => {
-    return user.id == userId;
+    return user.id == userIds;
   });
   if (!user) {
-    return { status: false, res: "user not found" };
+    throw new ApplicationError("user not found", 404);
   }
   const product = products.find((product) => {
     return product.id == productId;
   });
   if (!product) {
-    return { status: false, res: "product not found" };
+    throw new ApplicationError("product not found", 404);
   }
 
   if (!product.ratings) {

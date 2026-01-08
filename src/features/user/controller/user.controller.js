@@ -7,7 +7,7 @@ export const registerUser = (req, res, next) => {
     let user = addUser(userData);
     res.status(201).send({ status: "success", user });
   } else {
-    res.status(400).json({ status: "failure", msg: "invalid user details" });
+    throw new ApplicationError("invalid user details", 400);
   }
 };
 

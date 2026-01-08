@@ -6,12 +6,15 @@ const myFormat = printf(({ level, message, label, timestamp }) => {
   return `${timestamp} [${label}] ${level}: ${message}`;
 });
 
-const logger = createLogger({
+export const logger = createLogger({
   level: "info",
   format: combine(format.json(), timestamp(), myFormat),
   defaultMeta: { service: "request-logging" },
 
-  transports: [new winston.transports.File({ filename: "logs/combined.log" })],
+  transports: [
+    new winston.transports.File({ filename: "logs/combined.log" }),
+    new winston.transports.File({ filename: "logs/error.log", level: "error" }),
+  ],
 });
 
 const loggerMiddleware = async (req, res, next) => {
