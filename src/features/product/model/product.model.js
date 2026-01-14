@@ -1,4 +1,4 @@
-import { getAllUsers } from "../../user/model/user.model.js";
+import { ApplicationError } from "../../../errorHandler/applicationError.js";
 
 let id = 3;
 const products = [
@@ -12,29 +12,28 @@ export const fetchAllProducts = () => {
 };
 
 export const rateProductModel = (productId, userId, rating) => {
-  const user = getAllUsers().find((user) => {
-    return user.id == userId;
-  });
-  if (!user) {
-    return { status: false, res: "user not found" };
-  }
-  const product = products.find((product) => {
-    return product.id == productId;
-  });
-  if (!product) {
-    return { status: false, res: "product not found" };
-  }
-
-  if (!product.ratings) {
-    product.ratings = [];
-    product.ratings.push({ userId, rating });
-  } else {
-    const existingRating = product.ratings.findIndex((rating) => {
-      return rating.userId == userId;
-    });
-    if (existingRating >= 0)
-      product.ratings[existingRating] = { userId, rating };
-    else product.ratings.push({ userId, rating });
-  }
-  return { status: true, res: product };
+  // const user = getAllUsers().find((user) => {
+  //   return user.id == userIds;
+  // });
+  // if (!user) {
+  //   throw new ApplicationError("user not found", 404);
+  // }
+  // const product = products.find((product) => {
+  //   return product.id == productId;
+  // });
+  // if (!product) {
+  //   throw new ApplicationError("product not found", 404);
+  // }
+  // if (!product.ratings) {
+  //   product.ratings = [];
+  //   product.ratings.push({ userId, rating });
+  // } else {
+  //   const existingRating = product.ratings.findIndex((rating) => {
+  //     return rating.userId == userId;
+  //   });
+  //   if (existingRating >= 0)
+  //     product.ratings[existingRating] = { userId, rating };
+  //   else product.ratings.push({ userId, rating });
+  // }
+  // return { status: true, res: product };
 };

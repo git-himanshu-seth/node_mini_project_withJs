@@ -1,27 +1,47 @@
-import fs from "fs";
+import winston from "winston";
+const { createLogger, format, transports } = winston;
+const { combine, timestamp, label, printf } = format;
 
-const fsPromises = fs.promises;
+const myFormat = printf(({ level, message, label, timestamp }) => {
+  return `${timestamp} [${label}] ${level}:\n${message}`;
+});
 
-const log = async (logData) => {
-  try {
-    logData = logData;
-    await fsPromises.appendFile("log.txt", logData + "\n");
-  } catch (err) {
-    console.error("Error writing log:", err);
-  }
-};
+export const logger = createLogger({
+  level: "info",
+  format: combine(format.json(), timestamp(), myFormat),
+  defaultMeta: { service: "request-logging" },
+
+  transports: [
+    new winston.transports.File({ filename: "logs/combined.log" }),
+    new winston.transports.File({ filename: "logs/error.log", level: "error" }),
+  ],
+});
 
 const loggerMiddleware = async (req, res, next) => {
   if (!req.url.includes("login")) {
-    let logData = ` TimeStamp: ${new Date().toISOString()} \n Method: ${
+    const logData = `Timestamp: ${new Date().toISOString()}\n Method: ${
       req.method
-    } \n Request: ${req.url} \n Headers: ${
-      req.headers.origin
-    } \n Body: ${JSON.stringify(req.body)} \n Parameters: ${JSON.stringify(
-      req.params
-    )} \n Query: ${JSON.stringify(req.query)} \n`;
-    log(logData);
+    }\nURL: ${req.url}\nHeaders: ${JSON.stringify(
+      req.headers
+    )}\nQuery: ${JSON.stringify(req.query)}\nBody: ${JSON.stringify(
+      req.body
+    )}\n`;
+    logger.info(logData);
   }
+
+  res.on("finish", () => {
+    if (res.statusCode >= 400) {
+      const errorLogData = `Timestamp: ${new Date().toISOString()}\n Method: ${
+        req.method
+      }\nURL: ${req.url}\nQuery: ${JSON.stringify(
+        req.query
+      )}\nBody: ${JSON.stringify(req.body)}\nStatus Code: ${
+        res.statusCode
+      }\nStatus Message: ${res.statusMessage}\n error`;
+      logger.error(errorLogData);
+    }
+  });
+
   next();
 };
 
