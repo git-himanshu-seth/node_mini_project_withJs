@@ -3,7 +3,7 @@ const { createLogger, format, transports } = winston;
 const { combine, timestamp, label, printf } = format;
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
-  return `${timestamp} [${label}] ${level}: ${message}`;
+  return `${timestamp} [${label}] ${level}:\n${message}`;
 });
 
 export const logger = createLogger({
@@ -19,9 +19,29 @@ export const logger = createLogger({
 
 const loggerMiddleware = async (req, res, next) => {
   if (!req.url.includes("login")) {
-    let logData = ` ${req.url} ---- ${JSON.stringify(req.body)} `;
+    const logData = `Timestamp: ${new Date().toISOString()}\n Method: ${
+      req.method
+    }\nURL: ${req.url}\nHeaders: ${JSON.stringify(
+      req.headers
+    )}\nQuery: ${JSON.stringify(req.query)}\nBody: ${JSON.stringify(
+      req.body
+    )}\n`;
     logger.info(logData);
   }
+
+  res.on("finish", () => {
+    if (res.statusCode >= 400) {
+      const errorLogData = `Timestamp: ${new Date().toISOString()}\n Method: ${
+        req.method
+      }\nURL: ${req.url}\nQuery: ${JSON.stringify(
+        req.query
+      )}\nBody: ${JSON.stringify(req.body)}\nStatus Code: ${
+        res.statusCode
+      }\nStatus Message: ${res.statusMessage}\n error`;
+      logger.error(errorLogData);
+    }
+  });
+
   next();
 };
 
