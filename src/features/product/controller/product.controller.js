@@ -17,9 +17,11 @@ export class productController {
     const products = await this.productRepository.getAllProducts();
     return res.status(200).json({ success: true, products });
   };
-  // getOneProduct = (req, res) => {
-  //   res.json({ success: true, msg: "getOneProduct working" });
-  // };
+  getOneProduct = async (req, res) => {
+    const { id } = req.params;
+    const product = await this.productRepository.getOneProduct(id);
+    res.status(200).json({ status: true, product: product });
+  };
 
   // rateProduct = (req, res) => {
   //   const { userId, productId, rating } = req.query;

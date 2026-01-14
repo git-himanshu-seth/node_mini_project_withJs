@@ -5,12 +5,11 @@ import jwtAuth from "../../../middlewares/jwtAuth.js";
 const router = express.Router();
 const controller = new productController();
 // get routes
-// router.route("/").get(authorizer, getAllProducts);
+router.route("/").post(controller.addProduct);
 router.route("/").get(jwtAuth, controller.getAllProducts);
-// router.route("/:id").get(getOneProduct);
+router.route("/:id").get(controller.getOneProduct);
 
 // // post routes
-router.route("/").post(controller.addProduct);
 // router.route("/rateproduct").post(rateProduct);
 
 export default router;

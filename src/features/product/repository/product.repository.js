@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { getDB } from "../../../config/mongodb.js";
 import { ApplicationError } from "../../../errorHandler/applicationError.js";
 
@@ -29,6 +30,16 @@ export class productRepository {
       return result;
     } catch (err) {
       throw new ApplicationError("Invalid user", 400);
+    }
+  }
+  async getOneProduct(id) {
+    try {
+      const db = getDB();
+      const collection = db.collection(this.collectionName);
+      const result = await collection.findOne(new ObjectId(id));
+      return result;
+    } catch (err) {
+      throw new ApplicationError("Invalid key or invalid user type", 400);
     }
   }
 }
