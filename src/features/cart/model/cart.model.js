@@ -1,8 +1,6 @@
 // Please don't change the pre-written code
 // Import the necessary modules here
 
-import { fetchAllProducts } from "../../product/model/product.model.js";
-
 let cartId = 0;
 export class cartModel {
   constructor(userId, productId, quantity) {
