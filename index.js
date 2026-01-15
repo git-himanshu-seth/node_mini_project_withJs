@@ -36,7 +36,7 @@ app.use(loggerMiddleware);
 app.use("/api-docs", swagger.serve, swagger.setup(swaggerDocument));
 app.use("/api/product", (req, res, next) => productRoutes(req, res, next));
 app.use("/api/user", (req, res, next) => userRoutes(req, res, next));
-// app.use("/api/cart", cartRoutes);
+app.use("/api/cart", (req, res, next) => cartRoutes(req, res, next));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
