@@ -23,6 +23,13 @@ export class productController {
     res.status(200).json({ status: true, product: product });
   };
 
+  filterProducts = async (req, res) => {
+    const { category, desc, maxPrice, minPrice } = req.query;
+    console.log("Filter Values:", category, desc, maxPrice, minPrice);
+    const products = await this.productRepository.filterProducts(req.query);
+    return res.status(200).json({ status: "success", products });
+  };
+
   // rateProduct = (req, res) => {
   //   const { userId, productId, rating } = req.query;
   // };

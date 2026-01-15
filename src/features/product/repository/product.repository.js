@@ -42,4 +42,37 @@ export class productRepository {
       throw new ApplicationError("Invalid key or invalid user type", 400);
     }
   }
+
+  async filterProducts({ category, desc, maxPrice, minPrice } = filterValues) {
+    try {
+      console.log(category, desc, maxPrice, minPrice);
+      let query = [];
+      if (maxPrice) {
+        const queryObject = { price: { $lte: parseFloat(maxPrice) } };
+        query.push(queryObject);
+      }
+      if (minPrice) {
+        const queryObject = { price: { $gte: parseFloat(minPrice) } };
+        query.push(queryObject);
+      }
+      if (category) {
+        let catArray = JSON.parse(category.replace(/'/g, '"'));
+        category = catArray;
+        const queryObject = { category: { $in: category } };
+        query.push(queryObject);
+      }
+      // Hold for the advance search
+      // if (desc) {
+      //   query.push({ $text: { $search: desc } });
+      // }
+      const db = getDB();
+      const collect = db.collection(this.collectionName);
+      console.log(query);
+      const filteredProducts = await collect.find({ $and: query }).toArray();
+      return filteredProducts;
+    } catch (err) {
+      console.log(err);
+      throw new ApplicationError("Something went wrong with query.", 400);
+    }
+  }
 }
