@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
-import { getDB } from "../../../config/mongodb.js";
-import { ApplicationError } from "../../../errorHandler/applicationError.js";
+import { getDB } from "../../config/mongodb.js";
+import { ApplicationError } from "../../errorHandler/applicationError.js";
 
 export class productRepository {
   constructor() {
@@ -96,6 +96,26 @@ export class productRepository {
       );
     } catch (err) {
       throw new ApplicationError("Invalid details.", 400);
+    }
+  }
+  async averageProductPricePerCategory() {
+    try {
+      const db = getDB();
+      return await db
+        .collection(this.collectionName)
+        .aggregate([
+          {
+            // Stage 1: Get Vaerge price per category
+            $group: {
+              _id: "$category",
+              averagePrice: { $avg: "$price" },
+            },
+          },
+        ])
+        .toArray();
+    } catch (err) {
+      console.log(err);
+      throw new ApplicationError("Something went wrong with database", 500);
     }
   }
 }

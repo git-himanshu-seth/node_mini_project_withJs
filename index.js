@@ -1,9 +1,9 @@
 import express from "express";
 import swagger from "swagger-ui-express";
 import cors from "cors";
-import productRoutes from "./src/features/product/routes/product.routes.js";
-import userRoutes from "./src/features/user/routes/user.routes.js";
-import cartRoutes from "./src/features/cart/routes/cart.route.js";
+import productRoutes from "./src/features/product/routes.js";
+import userRoutes from "./src/features/user/routes.js";
+import cartRoutes from "./src/features/cart/route.js";
 import cookieParser from "cookie-parser";
 
 import swaggerDocument from "./swagger.json" assert { type: "json" };
@@ -34,11 +34,21 @@ app.use(cors(corsOptions));
 // });
 app.use(loggerMiddleware);
 app.use("/api-docs", swagger.serve, swagger.setup(swaggerDocument));
-app.use("/api/product", (req, res, next) => productRoutes(req, res, next));
-app.use("/api/user", (req, res, next) => userRoutes(req, res, next));
-app.use("/api/cart", (req, res, next) => cartRoutes(req, res, next));
+app.use("/api/product", productRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/cart", cartRoutes);
 
 // Error handling middleware
+// Error handler middleware
+app.use((err, req, res, next) => {
+  console.log(err);
+  if (err instanceof ApplicationError) {
+    return res.status(err.code).send(err.message);
+  }
+
+  // server errors.
+  res.status(500).send("Something went wrong, please try later");
+});
 app.use((err, req, res, next) => {
   if (err instanceof ApplicationError) {
     return res.status(err.status).json({ error: err.message });
