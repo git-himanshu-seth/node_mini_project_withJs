@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
-import { getDB } from "../../../config/mongodb.js";
-import { ApplicationError } from "../../../errorHandler/applicationError.js";
+import { getDB } from "../../config/mongodb.js";
+import { ApplicationError } from "../../errorHandler/applicationError.js";
 import jwt from "jsonwebtoken";
 export class UserRepository {
   constructor() {

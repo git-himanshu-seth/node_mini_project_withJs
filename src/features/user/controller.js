@@ -1,7 +1,5 @@
-import { ApplicationError } from "../../../errorHandler/applicationError.js";
-import jwt from "jsonwebtoken";
-import { UserRepository } from "../repository/user.repository.js";
-import { userModal } from "../model/user.model.js";
+import { userModal } from "./model.js";
+import { UserRepository } from "./repository.js";
 
 export class userController {
   constructor() {
