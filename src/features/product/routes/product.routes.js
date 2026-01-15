@@ -6,6 +6,7 @@ const router = express.Router();
 const controller = new productController();
 // get routes
 router.route("/").post(controller.addProduct);
+router.route("/filter").get(jwtAuth, controller.filterProducts);
 router.route("/").get(jwtAuth, controller.getAllProducts);
 router.route("/:id").get(controller.getOneProduct);
 
