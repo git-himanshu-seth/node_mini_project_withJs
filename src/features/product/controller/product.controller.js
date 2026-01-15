@@ -1,5 +1,5 @@
 // import { ApplicationError } from "../../../errorHandler/applicationError.js";
-import { productModal } from "../model/product.model.js";
+import { productModal, rateProductModel } from "../model/product.model.js";
 import { productRepository } from "../repository/product.repository.js";
 
 export class productController {
@@ -30,7 +30,11 @@ export class productController {
     return res.status(200).json({ status: "success", products });
   };
 
-  // rateProduct = (req, res) => {
-  //   const { userId, productId, rating } = req.query;
-  // };
+  rateProduct = async (req, res) => {
+    const { productId, rating } = req.body;
+    const userId = req.userId;
+    const ratingObj = new rateProductModel(productId, userId, rating);
+    await this.productRepository.rateProduct(ratingObj);
+    res.status(201).send("Rating added successfully.");
+  };
 }

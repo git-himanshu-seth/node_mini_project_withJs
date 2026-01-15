@@ -1,36 +1,34 @@
 // Please don't change the pre-written code
 // Import the necessary modules here
 
-import { addToCart, removeFromCart } from "../model/cart.model.js";
+import { cartModel } from "../model/cart.model.js";
+import { cartRepository } from "../repository/cart.repository.js";
 
-export const addToCartController = (req, res) => {
-  // Write your code here
-  const userId = req.userId;
-  const { productId, quantity } = req.query;
-
-  if (productId && quantity) {
-    const result = addToCart(
-      Number(userId),
-      Number(productId),
-      Number(quantity)
-    );
-    return res.status(200).json(result);
-  } else {
-    return res
-      .status(400)
-      .json({ success: false, meg: "operation not allowed" });
+export class cartController {
+  constructor() {
+    this.repository = new cartRepository();
   }
-};
 
-export const removeFromCartController = (req, res) => {
-  // Write your code here
-  const userId = req.userId;
-  const cartItemId = req.params.itemId;
-  if (cartItemId) {
-    return res.status(200).json(removeFromCart(userId, Number(cartItemId)));
-  } else {
-    return res
-      .status(400)
-      .json({ success: false, msg: "operation not allowed" });
-  }
-};
+  getCartItemsController = async (req, res) => {
+    const userId = req.userId;
+    console.log("userId", userId);
+    const result = await this.repository.getCartItems(userId);
+    res.status(200).json({ status: "success", items: result });
+  };
+
+  addToCartController = async (req, res) => {
+    const userId = req.userId;
+    const { productId, quantity } = req.body;
+    const cartItem = new cartModel(userId, productId, quantity);
+    await this.repository.addToCart(cartItem);
+    return res.status(201).send("Cart updated successfully.");
+  };
+
+  removeFromCartController = async (req, res) => {
+    // Write your code here
+    const userId = req.userId;
+    const itemId = req.params.itemId;
+    await this.repository.deleteCartItem({ userId, itemId });
+    return res.status(200).send("Item Deleted successfully.");
+  };
+}
