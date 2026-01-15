@@ -5,6 +5,7 @@ import { ApplicationError } from "../../../errorHandler/applicationError.js";
 export class productRepository {
   constructor() {
     this.collectionName = "products";
+    this.ratingCollectionName = "ratings";
   }
   addProducts = async ({ name, desc, price, size, category } = product) => {
     try {
@@ -73,6 +74,28 @@ export class productRepository {
     } catch (err) {
       console.log(err);
       throw new ApplicationError("Something went wrong with query.", 400);
+    }
+  }
+
+  async rateProduct(rating) {
+    try {
+      console.log(rating);
+      const db = getDB();
+      const collection = db.collection(this.ratingCollectionName);
+      await collection.updateOne(
+        {
+          userId: new ObjectId(rating.userId),
+          productId: new ObjectId(rating.productId),
+        },
+        {
+          $set: {
+            rating: rating?.rating,
+          },
+        },
+        { upsert: true }
+      );
+    } catch (err) {
+      throw new ApplicationError("Invalid details.", 400);
     }
   }
 }

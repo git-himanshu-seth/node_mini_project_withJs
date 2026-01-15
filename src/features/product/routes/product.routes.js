@@ -8,9 +8,7 @@ const controller = new productController();
 router.route("/").post(controller.addProduct);
 router.route("/filter").get(jwtAuth, controller.filterProducts);
 router.route("/").get(jwtAuth, controller.getAllProducts);
+router.route("/rate").post(jwtAuth, controller.rateProduct);
 router.route("/:id").get(controller.getOneProduct);
-
-// // post routes
-// router.route("/rateproduct").post(rateProduct);
 
 export default router;
